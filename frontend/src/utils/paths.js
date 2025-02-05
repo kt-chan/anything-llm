@@ -40,10 +40,10 @@ export default {
     return "https://discord.com/invite/6UyHPeGZAC";
   },
   docs: () => {
-    return "https://docs.useanything.com";
+    return "https://docs.anythingllm.com";
   },
   mailToMintplex: () => {
-    return "mailto:team@mintplexlabs.com";
+    return "mailto:admin@iteasoft.com";
   },
   hosting: () => {
     return "https://my.mintplexlabs.com/aio-checkout?product=anythingllm";
@@ -75,6 +75,9 @@ export default {
   },
   apiDocs: () => {
     return `${API_BASE}/docs`;
+  },
+  orderFineTune: () => {
+    return `/fine-tuning`;
   },
   settings: {
     system: () => {

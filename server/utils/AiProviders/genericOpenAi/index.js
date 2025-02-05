@@ -1,3 +1,6 @@
+const axios = require('axios');
+const fs = require('fs');
+const HttpsProxyAgent = require("https-proxy-agent");
 const { NativeEmbedder } = require("../../EmbeddingEngines/native");
 const {
   handleDefaultStreamResponseV2,
@@ -13,10 +16,48 @@ class GenericOpenAiLLM {
       );
 
     this.basePath = process.env.GENERIC_OPEN_AI_BASE_PATH;
+    let httpsAgent;
+
+    //@DEBUG @PROXY - (C)ktchan - Setup HttpPorxy for firewall
+    console.log('@Debug GenericOpenAiLLM .... 1 / basePath: ' + this.basePath);
+    let http_proxy = process.env.HTTP_PROXY || process.env.http_proxy;
+
+    if (!!http_proxy) {
+      console.log('@Debug GenericOpenAiLLM .... 2 / HTTP_PROXY: ' + http_proxy);
+      let proxy = new URL(http_proxy);
+      if (process.env.NODE_EXTRA_CA_CERTS) {
+        try {
+          let ca = fs.readFileSync(process.env.NODE_EXTRA_CA_CERTS);
+          // 代理配置对象
+          const proxyConfig = {
+            host: proxy.hostname, // 代理服务器的主机名
+            port: proxy.port, // 代理服务器的端口号
+            ca: ca // 读取的CA证书
+          };
+          httpsAgent = new HttpsProxyAgent(proxyConfig);
+        } catch (err) {
+          console.error('Error reading CA certificate file:', err);
+          // 处理错误，例如设置默认的 httpsAgent 或者退出
+        }
+      } else {
+        // 代理配置对象，如果不需要额外的CA证书
+        const proxyConfig = {
+          host: proxy.hostname, // 代理服务器的主机名
+          port: proxy.port // 代理服务器的端口号
+        };
+        httpsAgent = new HttpsProxyAgent(proxyConfig);
+      }
+    } else{
+      console.log('@Debug GenericOpenAiLLM .... 2 without Proxy set.');
+    }
+
+    // 创建 OpenAIApi 实例
     this.openai = new OpenAIApi({
       baseURL: this.basePath,
       apiKey: process.env.GENERIC_OPEN_AI_API_KEY ?? null,
+      httpAgent: httpsAgent, // 注意这里应该是 httpAgent
     });
+
     this.model =
       modelPreference ?? process.env.GENERIC_OPEN_AI_MODEL_PREF ?? null;
     this.maxTokens = process.env.GENERIC_OPEN_AI_MAX_TOKENS

@@ -1,19 +1,19 @@
 const { v4 } = require("uuid");
 const fs = require("fs");
+const path = require('path');
 const { tokenizeString } = require("../../utils/tokenizer");
 const {
   createdDate,
+  saveFile,
   trashFile,
-  writeToServerDocuments,
 } = require("../../utils/files");
-const { default: slugify } = require("slugify");
 
 async function asTxt({ fullFilePath = "", filename = "" }) {
   let content = "";
   try {
     content = fs.readFileSync(fullFilePath, "utf8");
-  } catch (err) {
-    console.error("Could not read file!", err);
+  } catch (error) {
+    console.error("Could not read file!", error);
   }
 
   if (!content?.length) {
@@ -41,12 +41,18 @@ async function asTxt({ fullFilePath = "", filename = "" }) {
     token_count_estimate: tokenizeString(content).length,
   };
 
-  const document = writeToServerDocuments(
-    data,
-    `${slugify(filename)}-${data.id}`
-  );
-  trashFile(fullFilePath);
-  console.log(`[SUCCESS]: ${filename} converted & ready for embedding.\n`);
+  //@DEBUG @ktchan @s3a 
+  //Update saveFile and writeToS3Documents to add fileExtension
+  let document;
+  try {
+    document = saveFile(data, filename);
+    trashFile(fullFilePath);
+    console.log(`[SUCCESS]: ${filename} converted & ready for embedding.\n`);
+  } catch (error) {
+    console.error("Could not save file!", error);
+    return { success: false, reason: error.message, documents: [] };
+  }
+
   return { success: true, reason: null, documents: [document] };
 }
 

@@ -76,15 +76,22 @@ class YoutubeTranscript {
       const availableCaptions =
         data?.captions?.playerCaptionsTracklistRenderer?.captionTracks || [];
 
-      // If languageCode was specified then search for it's code, otherwise get the first.
       let captionTrack = availableCaptions?.[0];
-      if (langCode)
-        captionTrack =
-          availableCaptions.find((track) =>
-            track.languageCode.includes(langCode)
-          ) ?? availableCaptions?.[0];
+      if (captionTrack === undefined) {
+        //No caption provided, go to whisper for voice to text conversion
+        console.error('YoutubeTranscript.#parseTranscriptEndpoint: whisper for voice to text conversion is under development');
+        return null;
+      }
+      else {
+        // If languageCode was specified then search for it's code, otherwise get the first.
+        if (langCode)
+          captionTrack =
+            availableCaptions.find((track) =>
+              track.languageCode.includes(langCode)
+            ) ?? availableCaptions?.[0];
 
-      return captionTrack?.baseUrl;
+        return captionTrack?.baseUrl;
+      }
     } catch (e) {
       console.error(`YoutubeTranscript.#parseTranscriptEndpoint ${e.message}`);
       return null;

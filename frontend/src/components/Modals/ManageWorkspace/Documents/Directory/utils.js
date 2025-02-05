@@ -21,19 +21,27 @@ export function filterFileSearchResults(files = [], searchTerm = "") {
   const searchResult = [];
   for (const folder of files?.items) {
     // If folder is a good match then add all its children
-    if (strDistance(folder.name, searchTerm) <= LEVENSHTEIN_MIN) {
+    if (strDistance(folder.name.toLowerCase(), searchTerm.toLowerCase()) <= LEVENSHTEIN_MIN) {
       searchResult.push(folder);
       continue;
+    } else {
+      if (folder.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        fileSearchResults.push(folder); 
+        continue;
+      }
     }
 
     // Otherwise check children for good results
     const fileSearchResults = [];
     for (const file of folder?.items) {
-      if (
-        strDistance(stripUuidAndJsonFromString(file.name), searchTerm) <=
-        LEVENSHTEIN_MIN
-      ) {
+      let fileName = stripUuidAndJsonFromString(file.name).toLowerCase()
+      if (strDistance(fileName, searchTerm.toLowerCase()) <= LEVENSHTEIN_MIN) {
         fileSearchResults.push(file);
+      }
+      else {
+        if (fileName.toLowerCase().includes(searchTerm.toLowerCase())) {
+          fileSearchResults.push(file);
+        }
       }
     }
 

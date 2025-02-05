@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { v4 } = require("uuid");
+const shell = require('shelljs')
 const defaultWhisper = "Xenova/whisper-small"; // Model Card: https://huggingface.co/Xenova/whisper-small
 const fileSize = {
   "Xenova/whisper-small": "250mb",
@@ -27,6 +28,40 @@ class LocalWhisper {
 
   #log(text, ...args) {
     console.log(`\x1b[32m[LocalWhisper]\x1b[0m ${text}`, ...args);
+  }
+
+  #checkModelExist() {
+    this.#log("@Debug .... checkModelExist .... ");
+    this.#log("@Debug .... checkModelExist .... " + this.modelPath);
+    var modelfound = fs.existsSync(this.modelPath)
+    if (!modelfound) {
+      this.#log("@Debug .... checkModelExist .... model is not found, and downloading " + this.modelPath);
+      // Downloading the onnx model file
+      // "Xenova/whisper-small": "250mb",
+      // "Xenova/whisper-large": "1.56GB",
+      var result = shell.exec('huggingface-cli download "Xenova/whisper-small" --include "*quantized*" --local-dir-use-symlinks False --local-dir ' + this.modelPath)
+      if (result.code == 0) {
+        /* ... do something with data ... */
+        this.#log('Command executed successfully, download "Xenova/whisper-small model');
+        modelfound = true;
+      } else {
+        /* ... do something with data ... */
+        this.#log('Command failed with exit code', result.code);
+        modelfound = false;
+      }
+      // Downloading the json
+      result = shell.exec('huggingface-cli download "Xenova/whisper-small" --include "*.json" --local-dir-use-symlinks False --local-dir ' + this.modelPath)
+      if (result.code == 0) {
+        /* ... do something with data ... */
+        this.#log('Command executed successfully, download "Xenova/whisper-small json config');
+        modelfound = true;
+      } else {
+        /* ... do something with data ... */
+        this.#log('Command failed with exit code', result.code);
+        modelfound = false;
+      }
+    }
+    return modelfound
   }
 
   async #convertToWavAudioData(sourcePath) {
@@ -106,7 +141,8 @@ class LocalWhisper {
   }
 
   async client() {
-    if (!fs.existsSync(this.modelPath)) {
+    //@KTCHAN check model exist, if not download with huggingface client
+    if (!this.#checkModelExist()) {
       this.#log(
         `The native whisper model has never been run and will be downloaded right now. Subsequent runs will be faster. (~${this.fileSize})`
       );

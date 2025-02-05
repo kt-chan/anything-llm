@@ -95,7 +95,7 @@ export default function DefaultChatContainer() {
               >
                 {t("welcomeMessage.part3")}
               </span>
-              <a
+              {/* <a
                 href={paths.github()}
                 target="_blank"
                 rel="noreferrer"
@@ -103,7 +103,7 @@ export default function DefaultChatContainer() {
               >
                 <GitMerge className="h-4 w-4" />
                 <p>{t("welcomeMessage.githubIssue")}</p>
-              </a>
+              </a> */}
             </div>
           </div>
         </div>
@@ -253,7 +253,7 @@ export default function DefaultChatContainer() {
               </span>
 
               <div className="flex flex-col md:flex-row items-start md:items-center gap-1 md:gap-4">
-                <a
+                {/* <a
                   href={paths.github()}
                   target="_blank"
                   rel="noreferrer"
@@ -261,7 +261,7 @@ export default function DefaultChatContainer() {
                 >
                   <GithubLogo className="h-4 w-4" />
                   <p>{t("welcomeMessage.starOnGithub")}</p>
-                </a>
+                </a> */}
                 <a
                   href={paths.mailToMintplex()}
                   className="mt-5 w-fit transition-all duration-300 border border-slate-200 px-4 py-2 rounded-lg text-white text-sm items-center flex gap-x-2 hover:bg-slate-200 hover:text-slate-800 focus:ring-gray-800"

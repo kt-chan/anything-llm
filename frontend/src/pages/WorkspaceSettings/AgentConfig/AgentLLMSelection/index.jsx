@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import AnythingLLMIcon from "@/media/logo/anything-llm-icon.png";
+import AnythingLLMIcon from "@/media/logo/anyzearch-icon.png";
 import AgentLLMItem from "./AgentLLMItem";
 import { AVAILABLE_LLM_PROVIDERS } from "@/pages/GeneralSettings/LLMPreference";
 import { CaretUpDown, Gauge, MagnifyingGlass, X } from "@phosphor-icons/react";
@@ -21,6 +21,7 @@ const ENABLED_PROVIDERS = [
   "perplexity",
   "textgenwebui",
   "generic-openai",
+  "bedrock",
   // TODO: More agent support.
   // "cohere",         // Has tool calling and will need to build explicit support
   // "huggingface"     // Can be done but already has issues with no-chat templated. Needs to be tested.

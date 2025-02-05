@@ -1,43 +1,51 @@
 import ConnectorImages from "@/components/DataConnectorOption/media";
 import { MagnifyingGlass } from "@phosphor-icons/react";
-import GithubOptions from "./Connectors/Github";
+import WebsiteDepthOptions from "./Connectors/WebsiteDepth";
 import YoutubeOptions from "./Connectors/Youtube";
-import ConfluenceOptions from "./Connectors/Confluence";
 import { useState } from "react";
 import ConnectorOption from "./ConnectorOption";
-import WebsiteDepthOptions from "./Connectors/WebsiteDepth";
+import ConfluenceOptions from "./Connectors/Confluence";
+import GithubOptions from "./Connectors/Github";
+import GitlabOptions from "./Connectors/Gitlab";
 
 export const DATA_CONNECTORS = {
-  github: {
-    name: "GitHub Repo",
-    image: ConnectorImages.github,
-    description:
-      "Import an entire public or private Github repository in a single click.",
-    options: <GithubOptions />,
+  webscraper: {
+    name: "Bulk Link Scraper",
+    image: ConnectorImages.websiteDepth,
+    description: "Scrape a website and its sub-links up to a certain depth.",
+    options: <WebsiteDepthOptions />,
   },
-  "youtube-transcript": {
+  youtube: {
     name: "YouTube Transcript",
     image: ConnectorImages.youtube,
     description:
       "Import the transcription of an entire YouTube video from a link.",
     options: <YoutubeOptions />,
   },
-  "website-depth": {
-    name: "Bulk Link Scraper",
-    image: ConnectorImages.websiteDepth,
-    description: "Scrape a website and its sub-links up to a certain depth.",
-    options: <WebsiteDepthOptions />,
-  },
-  confluence: {
-    name: "Confluence",
-    image: ConnectorImages.confluence,
-    description: "Import an entire Confluence page in a single click.",
-    options: <ConfluenceOptions />,
-  },
+  // github: {
+  //   name: "GitHub Repo",
+  //   image: ConnectorImages.github,
+  //   description:
+  //     "Import an entire public or private Github repository in a single click.",
+  //   options: <GithubOptions />,
+  // },
+  // gitlab: {
+  //   name: "GitLab Repo",
+  //   image: ConnectorImages.gitlab,
+  //   description:
+  //     "Import an entire public or private GitLab repository in a single click.",
+  //   options: <GitlabOptions />,
+  // },
+  // confluence: {
+  //   name: "Confluence",
+  //   image: ConnectorImages.confluence,
+  //   description: "Import an entire Confluence page in a single click.",
+  //   options: <ConfluenceOptions />,
+  // },
 };
 
 export default function DataConnectors() {
-  const [selectedConnector, setSelectedConnector] = useState("github");
+  const [selectedConnector, setSelectedConnector] = useState("webscraper");
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredConnectors = Object.keys(DATA_CONNECTORS).filter((slug) =>

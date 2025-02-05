@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import AnythingLLM from "./media/logo/anything-llm.png";
+import AnythingLLM from "./media/logo/anyzearch.png";
 import DefaultLoginLogo from "./media/illustrations/login-logo.svg";
 import System from "./models/system";
 

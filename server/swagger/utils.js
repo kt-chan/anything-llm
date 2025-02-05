@@ -29,7 +29,7 @@ function useSwagger(app) {
       },
     ));
   } else {
-    // we regenerate the html page only in development mode to ensure it is up-to-date when the code is hot-reloaded.
+    //we regenerate the html page only in development mode to ensure it is up-to-date when the code is hot-reloaded.
     app.get(
       "/api/docs",
       async (_, response) => {

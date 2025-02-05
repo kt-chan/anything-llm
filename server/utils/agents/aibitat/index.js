@@ -3,6 +3,8 @@ const { APIError } = require("./error.js");
 const Providers = require("./providers/index.js");
 const { Telemetry } = require("../../../models/telemetry.js");
 
+EventEmitter.defaultMaxListeners = 20; // Set max limit to 20, default is 10
+
 /**
  * AIbitat is a class that manages the conversation between agents.
  * It is designed to solve a task with LLM.
@@ -775,6 +777,8 @@ ${this.getHistory({ to: route.to })
         return new Providers.PerplexityProvider({ model: config.model });
       case "textgenwebui":
         return new Providers.TextWebGenUiProvider({});
+      case "bedrock":
+        return new Providers.AWSBedrockProvider({});
 
       default:
         throw new Error(

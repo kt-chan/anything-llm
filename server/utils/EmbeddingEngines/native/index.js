@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const { toChunks } = require("../../helpers");
 const { v4 } = require("uuid");
+const shell = require('shelljs')
 
 class NativeEmbedder {
   // This is a folder that Mintplex Labs hosts for those who cannot capture the HF model download
@@ -19,7 +20,7 @@ class NativeEmbedder {
         : path.resolve(__dirname, `../../../storage/models`)
     );
     this.modelPath = path.resolve(this.cacheDir, "Xenova", "all-MiniLM-L6-v2");
-    this.modelDownloaded = fs.existsSync(this.modelPath);
+    this.modelDownloaded = this.#checkModelExist();
 
     // Limit of how many strings we can process in a single pass to stay with resource or network limits
     this.maxConcurrentChunks = 25;
@@ -32,6 +33,38 @@ class NativeEmbedder {
 
   log(text, ...args) {
     console.log(`\x1b[36m[NativeEmbedder]\x1b[0m ${text}`, ...args);
+  }
+
+  #checkModelExist() {
+    this.log("@Debug .... checkModelExist .... ");
+    this.log("@Debug .... checkModelExist .... " + this.modelPath);
+    var modelfound = fs.existsSync(this.modelPath)
+    if (!modelfound) {
+      this.log("@Debug .... checkModelExist .... model is not found, and downloading " + this.modelPath);
+      // Downloading the onnx model file
+      var result = shell.exec('huggingface-cli download "Xenova/all-MiniLM-L6-v2" --include "*model_quantized*" --local-dir-use-symlinks False --local-dir ' + this.modelPath)
+      if (result.code == 0) {
+        /* ... do something with data ... */
+        this.log('Command executed successfully');
+        modelfound = true;
+      } else {
+        /* ... do something with data ... */
+        this.log('Command failed with exit code', result.code);
+        modelfound = false;
+      }
+      // Downloading the json
+      result = shell.exec('huggingface-cli download "Xenova/all-MiniLM-L6-v2" --include "*.json" --local-dir-use-symlinks False --local-dir ' + this.modelPath)
+      if (result.code == 0) {
+        /* ... do something with data ... */
+        this.log('Command executed successfully');
+        modelfound = true;
+      } else {
+        /* ... do something with data ... */
+        this.log('Command failed with exit code', result.code);
+        modelfound = false;
+      }
+    }
+    return modelfound
   }
 
   #tempfilePath() {
@@ -62,6 +95,7 @@ class NativeEmbedder {
               env.remoteHost = hostOverride;
               env.remotePathTemplate = "{model}/"; // Our S3 fallback url does not support revision File structure.
             }
+
             this.log(`Downloading ${this.model} from ${env.remoteHost}`);
           }
           return pipeline(...args);
@@ -71,16 +105,15 @@ class NativeEmbedder {
           cache_dir: this.cacheDir,
           ...(!this.modelDownloaded
             ? {
-                // Show download progress if we need to download any files
-                progress_callback: (data) => {
-                  if (!data.hasOwnProperty("progress")) return;
-                  console.log(
-                    `\x1b[36m[NativeEmbedder - Downloading model]\x1b[0m ${
-                      data.file
-                    } ${~~data?.progress}%`
-                  );
-                },
-              }
+              // Show download progress if we need to download any files
+              progress_callback: (data) => {
+                if (!data.hasOwnProperty("progress")) return;
+                console.log(
+                  `\x1b[36m[NativeEmbedder - Downloading model]\x1b[0m ${data.file
+                  } ${~~data?.progress}%`
+                );
+              },
+            }
             : {}),
         }),
         retry: false,

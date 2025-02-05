@@ -4,7 +4,7 @@ import Sidebar from "@/components/SettingsSidebar";
 import { isMobile } from "react-device-detect";
 import System from "@/models/system";
 import showToast from "@/utils/toast";
-import AnythingLLMIcon from "@/media/logo/anything-llm-icon.png";
+import AnythingLLMIcon from "@/media/logo/anyzearch-icon.png";
 import OpenAiLogo from "@/media/llmprovider/openai.png";
 import GenericOpenAiLogo from "@/media/llmprovider/generic-openai.png";
 import AzureOpenAiLogo from "@/media/llmprovider/azure.png";
@@ -23,6 +23,8 @@ import KoboldCPPLogo from "@/media/llmprovider/koboldcpp.png";
 import TextGenWebUILogo from "@/media/llmprovider/text-generation-webui.png";
 import CohereLogo from "@/media/llmprovider/cohere.png";
 import LiteLLMLogo from "@/media/llmprovider/litellm.png";
+import AWSBedrockLogo from "@/media/llmprovider/bedrock.png";
+
 import PreLoader from "@/components/Preloader";
 import OpenAiOptions from "@/components/LLMSelection/OpenAiOptions";
 import GenericOpenAiOptions from "@/components/LLMSelection/GenericOpenAiOptions";
@@ -43,6 +45,7 @@ import CohereAiOptions from "@/components/LLMSelection/CohereAiOptions";
 import KoboldCPPOptions from "@/components/LLMSelection/KoboldCPPOptions";
 import TextGenWebUIOptions from "@/components/LLMSelection/TextGenWebUIOptions";
 import LiteLLMOptions from "@/components/LLMSelection/LiteLLMOptions";
+import AWSBedrockLLMOptions from "@/components/LLMSelection/AwsBedrockLLMOptions";
 
 import LLMItem from "@/components/LLMSelection/LLMItem";
 import { CaretUpDown, MagnifyingGlass, X } from "@phosphor-icons/react";
@@ -209,6 +212,19 @@ export const AVAILABLE_LLM_PROVIDERS = [
       "GenericOpenAiModelPref",
       "GenericOpenAiTokenLimit",
       "GenericOpenAiKey",
+    ],
+  },
+  {
+    name: "AWS Bedrock",
+    value: "bedrock",
+    logo: AWSBedrockLogo,
+    options: (settings) => <AWSBedrockLLMOptions settings={settings} />,
+    description: "Run powerful foundation models privately with AWS Bedrock.",
+    requiredConfig: [
+      "AwsBedrockLLMAccessKeyId",
+      "AwsBedrockLLMAccessKey",
+      "AwsBedrockLLMRegion",
+      "AwsBedrockLLMModel",
     ],
   },
   {

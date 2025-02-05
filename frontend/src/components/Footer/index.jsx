@@ -48,7 +48,8 @@ export default function Footer() {
   if (!Array.isArray(footerData) || footerData.length === 0) {
     return (
       <div className="flex justify-center mb-2">
-        <div className="flex space-x-4">
+        <div className="flex space-x-1">
+          {/* This is a block comment 
           <ToolTipWrapper id="open-github">
             <a
               href={paths.github()}
@@ -91,6 +92,7 @@ export default function Footer() {
               />
             </a>
           </ToolTipWrapper>
+          */}
           {!isMobile && <SettingsButton />}
         </div>
       </div>
